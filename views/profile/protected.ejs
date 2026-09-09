@@ -1,0 +1,20 @@
+<%- include('../partials/head') %>
+
+<div class="dashboard">
+  <aside class="dashboard-left">
+    <div class="profile-header">
+      <div class="profile-banner" style="background-color:<%= profileUser.accent_color || '#55acee' %>;"></div>
+      <div class="profile-card">
+        <img class="profile-avatar-large" src="<%= profileUser.avatar_url || '/images/default-avatar.svg' %>" alt="">
+        <div class="profile-name-block">
+          <div class="profile-display-name"><%= profileUser.display_name %></div>
+          <div class="profile-username">@<%= profileUser.username %></div>
+        </div>
+        <p style="margin-top:12px;color:var(--muted-text);">These Tweets are protected.</p>
+        <p style="font-size:13px;">Only confirmed followers have access to @<%= profileUser.username %>’s Tweets and complete profile. Click the Follow button to send a follow request.</p>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<%- include('../partials/foot') %>

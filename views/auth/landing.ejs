@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Linkora</title>
+  <link rel="stylesheet" href="/css/linkora.css">
+  <style>
+    .landing { min-height: 100vh; display: flex; }
+    .landing-left {
+      flex: 1;
+      background: var(--linkora-blue);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 40px;
+    }
+    .landing-left h2 { font-weight: 300; font-size: 22px; margin: 16px 0; }
+    .landing-left .feature { margin: 12px 0; font-size: 16px; }
+    .landing-right {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      padding: 40px;
+       }
+    .landing-form { width: 100%; max-width: 360px; }
+    .landing-form h1 { font-weight: 300; font-size: 28px; margin: 0 0 20px; }
+    .landing-logo { color: var(--linkora-blue); font-size: 32px; font-weight: 700; margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+<div class="landing">
+  <div class="landing-left">
+    <div style="font-size:48px;font-weight:700;">Linkora</div>
+    <h2>See what’s happening in the world right now</h2>
+    <div class="feature">Follow your interests</div>
+    <div class="feature">Hear what people are talking about</div>
+    <div class="feature">Join the conversation</div>
+  </div>
+  <div class="landing-right">
+    <div class="landing-form">
+      <div class="landing-logo">Linkora</div>
+      <h1>Join Linkora today.</h1>
+      <a href="/register" class="btn-primary" style="text-align:center;text-decoration:none;line-height:38px;margin-bottom:12px;">Sign up</a>
+      <a href="/login" class="btn-follow" style="display:block;text-align:center;height:38px;line-height:36px;font-size:14px;">Log in</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

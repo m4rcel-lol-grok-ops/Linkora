@@ -1,0 +1,52 @@
+<% 
+  const safeText = (tweet.text || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/#(\w+)/g, '<a href="/search?q=%23$1">#$1</a>')
+    .replace(/@(\w+)/g, '<a href="/$1">@$1</a>');
+  const timeStr = new Date(tweet.created_at).toLocaleString();
+  const isBest = (tweet.favorites_count || 0) + (tweet.retweets_count || 0) >= 5;
+%>
+<article class="tweet<%= isBest ? ' best-tweet' : '' %><%= typeof pinned !== 'undefined' && pinned ? ' pinned' : '' %>" data-tweet-id="<%= tweet.id %>">
+  <a href="/<%= tweet.username %>">
+    <img class="tweet-avatar" src="<%= tweet.avatar_url || '/images/default-avatar.svg' %>" alt="<%= tweet.display_name %>">
+  </a>
+  <div class="tweet-content">
+    <div class="tweet-header">
+      <a href="/<%= tweet.username %>" class="tweet-fullname"><%= tweet.display_name %></a>
+      <% if (tweet.is_verified) { %><span title="Verified" style="color:var(--linkora-blue);">✓</span><% } %>
+      <a href="/<%= tweet.username %>" class="tweet-username">@<%= tweet.username %></a>
+      <a href="/<%= tweet.username %>/status/<%= tweet.id %>" class="tweet-time" title="<%= timeStr %>"><%= timeStr %></a>
+    </div>
+    <div class="tweet-text"><%- safeText %></div>
+    <% if (tweet.media_urls && tweet.media_urls.length) { %>
+      <div class="tweet-media">
+        <img src="<%= tweet.media_urls[0] %>" alt="Media">
+      </div>
+    <% } %>
+    <div class="tweet-actions">
+      <button class="tweet-action reply" type="button" title="Reply" aria-label="Reply">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.046 2.242l-4.392-.88A2.5 2.5 0 007.1 3.45L2.5 14.5a2.5 2.5 0 002.45 3.4h.05l4.392.88a2.5 2.5 0 002.55-1.09l4.6-11.05a2.5 2.5 0 00-2.5-4.4z"/></svg>
+        <% if (tweet.replies_count) { %><span><%= tweet.replies_count %></span><% } %>
+      </button>
+      <% if (typeof currentUser !== 'undefined' && currentUser) { %>
+      <form action="/tweets/<%= tweet.id %>/<%= tweet.retweeted ? 'undo-retweet' : 'retweet' %>" method="post" style="display:inline;">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <button class="tweet-action retweet<%= tweet.retweeted ? ' retweeted' : '' %>" type="submit" title="Retweet" aria-label="Retweet">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.77 15.67c-.292-.293-.767-.293-1.06 0l-2.22 2.22V7.65c0-2.068-1.683-3.75-3.75-3.75h-5.85c-.414 0-.75.336-.75.75s.336.75.75.75h5.85c1.24 0 2.25 1.01 2.25 2.25v10.24l-2.22-2.22c-.293-.293-.768-.293-1.06 0s-.294.768 0 1.06l3.5 3.5c.145.147.337.22.53.22s.383-.072.53-.22l3.5-3.5c.294-.292.294-.767 0-1.06zm-10.66 3.28H7.26c-1.24 0-2.25-1.01-2.25-2.25V6.46l2.22 2.22c.148.147.34.22.532.22s.384-.073.53-.22c.293-.293.293-.768 0-1.06l-3.5-3.5c-.293-.294-.768-.294-1.06 0l-3.5 3.5c-.294.292-.294.767 0 1.06s.767.293 1.06 0l2.22-2.22V16.7c0 2.068 1.683 3.75 3.75 3.75h5.85c.414 0 .75-.336.75-.75s-.337-.75-.75-.75z"/></svg>
+          <% if (tweet.retweets_count) { %><span><%= tweet.retweets_count %></span><% } %>
+        </button>
+      </form>
+      <form action="/tweets/<%= tweet.id %>/<%= tweet.favorited ? 'unfavorite' : 'favorite' %>" method="post" style="display:inline;">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <button class="tweet-action favorite<%= tweet.favorited ? ' favorited' : '' %>" type="submit" title="Favorite" aria-label="Favorite">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.638h-.014C9.403 21.59 1.95 14.856 1.95 8.478c0-3.064 2.525-5.754 5.403-5.754 2.29 0 3.83 1.58 4.646 2.73.814-1.148 2.354-2.73 4.645-2.73 2.88 0 5.404 2.69 5.404 5.755 0 6.376-7.454 13.11-10.037 13.157H12z"/></svg>
+          <% if (tweet.favorites_count) { %><span><%= tweet.favorites_count %></span><% } %>
+        </button>
+      </form>
+      <% } %>
+      <button class="tweet-action more" type="button" title="More" aria-label="More">···</button>
+    </div>
+  </div>
+</article>

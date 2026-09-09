@@ -1,0 +1,23 @@
+<%- include('../partials/head') %>
+
+<div class="settings-layout">
+  <nav class="settings-nav">
+    <a href="/settings/account" class="<%= section === 'account' ? 'active' : '' %>">Account</a>
+    <a href="/settings/profile" class="<%= section === 'profile' ? 'active' : '' %>">Profile</a>
+    <a href="/settings/password" class="<%= section === 'password' ? 'active' : '' %>">Password</a>
+    <a href="/settings/privacy" class="<%= section === 'privacy' ? 'active' : '' %>">Privacy</a>
+    <a href="/settings/design" class="<%= section === 'design' ? 'active' : '' %>">Design</a>
+    <form action="/logout" method="post" style="margin:0;">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <button type="submit" style="width:100%;text-align:left;padding:10px 14px;border:none;border-top:1px solid var(--border-color);background:none;cursor:pointer;font-size:13px;color:var(--danger);">Log out</button>
+    </form>
+  </nav>
+  <div class="settings-content">
+    <h2 style="margin-top:0;font-weight:300;">Account</h2>
+    <p><strong>Username:</strong> @<%= currentUser.username %></p>
+    <p><strong>Email:</strong> <%= currentUser.email %></p>
+    <p style="color:var(--muted-text);font-size:13px;">Account management options will expand here.</p>
+  </div>
+</div>
+
+<%- include('../partials/foot') %>

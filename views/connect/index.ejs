@@ -1,0 +1,40 @@
+<%- include('../partials/head') %>
+
+<div class="dashboard">
+  <main class="dashboard-center" style="max-width:590px;margin:0 auto;">
+    <div class="timeline">
+      <div class="timeline-header">Connect</div>
+      <% if (notifications && notifications.length) { %>
+        <% notifications.forEach(function(n) { %>
+          <div class="notification-item">
+            <div class="notification-icon">
+              <% if (n.type === 'follow') { %>👤
+              <% } else if (n.type === 'favorite') { %>★
+              <% } else if (n.type === 'retweet') { %>↻
+              <% } else if (n.type === 'reply' || n.type === 'mention') { %>💬
+              <% } else { %>•<% } %>
+            </div>
+            <div class="notification-body">
+              <% if (n.actor_username) { %>
+                <a href="/<%= n.actor_username %>"><strong><%= n.actor_display_name %></strong></a>
+              <% } %>
+              <% if (n.type === 'follow') { %> followed you
+              <% } else if (n.type === 'favorite') { %> favorited your Tweet
+              <% } else if (n.type === 'retweet') { %> retweeted your Tweet
+              <% } else if (n.type === 'reply') { %> replied to your Tweet
+              <% } else if (n.type === 'mention') { %> mentioned you
+              <% } else { %> <%= n.type %><% } %>
+              <div style="color:var(--muted-text);font-size:12px;margin-top:2px;">
+                <%= new Date(n.created_at).toLocaleString() %>
+              </div>
+            </div>
+          </div>
+        <% }); %>
+      <% } else { %>
+        <div class="empty-state">No interactions yet. When people follow you, favorite or retweet your Tweets, you’ll see it here.</div>
+      <% } %>
+    </div>
+  </main>
+</div>
+
+<%- include('../partials/foot') %>

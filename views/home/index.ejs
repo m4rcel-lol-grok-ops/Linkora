@@ -1,0 +1,113 @@
+<%- include('../partials/head') %>
+
+<div class="dashboard">
+  <aside class="dashboard-left">
+    <!-- Mini profile -->
+    <div class="module mini-profile">
+      <div class="mini-profile-header" style="<%= currentUser.header_url ? 'background-image:url(' + currentUser.header_url + ')' : 'background-color:' + (currentUser.accent_color || '#55acee') %>"></div>
+      <div class="mini-profile-body">
+        <img class="mini-profile-avatar" src="<%= currentUser.avatar_url || '/images/default-avatar.svg' %>" alt="<%= currentUser.display_name %>">
+        <div class="mini-profile-name"><a href="/<%= currentUser.username %>"><%= currentUser.display_name %></a></div>
+        <div class="mini-profile-username">@<%= currentUser.username %></div>
+        <div class="mini-profile-stats">
+          <a href="/<%= currentUser.username %>">
+            <span class="stat-label">Tweets</span>
+            <span class="stat-value"><%= currentUser.tweets_count %></span>
+          </a>
+          <a href="/<%= currentUser.username %>/following">
+            <span class="stat-label">Following</span>
+            <span class="stat-value"><%= currentUser.following_count %></span>
+          </a>
+          <a href="/<%= currentUser.username %>/followers">
+            <span class="stat-label">Followers</span>
+            <span class="stat-value"><%= currentUser.followers_count %></span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Composer -->
+    <div class="module" id="compose">
+      <form class="composer" action="/compose" method="post" id="compose-form">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <div class="composer-inner">
+          <img class="composer-avatar" src="<%= currentUser.avatar_url || '/images/default-avatar.svg' %>" alt="">
+          <div class="composer-box">
+            <textarea name="text" id="tweet-text" placeholder="Compose new Tweet..." maxlength="140" rows="2" aria-label="Tweet text"></textarea>
+            <div class="composer-actions">
+              <div class="composer-tools">
+                <button type="button" title="Add photo" aria-label="Add photo">📷</button>
+              </div>
+              <div style="display:flex;align-items:center;">
+                <span class="char-count" id="char-count">140</span>
+                <button type="submit" class="btn-tweet-submit" id="tweet-submit" disabled>Tweet</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Who to follow -->
+    <div class="module">
+      <div class="module-header">
+        Who to follow
+        <a href="/discover">View all</a>
+      </div>
+      <div class="module-body">
+        <% if (suggestions && suggestions.length) { %>
+          <% suggestions.forEach(function(u) { %>
+            <div class="wtf-item">
+              <img class="wtf-avatar" src="<%= u.avatar_url || '/images/default-avatar.svg' %>" alt="">
+              <div class="wtf-info">
+                <a href="/<%= u.username %>" class="wtf-name"><%= u.display_name %></a>
+                <span class="wtf-username">@<%= u.username %></span>
+                <form action="/<%= u.username %>/follow" method="post" style="margin-top:6px;">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <button type="submit" class="btn-follow">Follow</button>
+                </form>
+              </div>
+            </div>
+          <% }); %>
+        <% } else { %>
+          <div class="empty-state">No suggestions right now</div>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- Trends -->
+    <div class="module">
+      <div class="module-header">
+        Trends
+        <a href="/discover">Change</a>
+      </div>
+      <div class="module-body">
+        <% if (trends && trends.length) { %>
+          <% trends.forEach(function(t) { %>
+            <div class="trend-item">
+              <a href="/search?q=%23<%= encodeURIComponent(t.tag) %>">#<%= t.tag %></a>
+              <div class="trend-meta"><% if (t.score) { %><%= t.score %> Tweets<% } %></div>
+            </div>
+          <% }); %>
+        <% } else { %>
+          <div class="empty-state">No trends yet</div>
+        <% } %>
+      </div>
+    </div>
+  </aside>
+
+  <main class="dashboard-center">
+    <div class="timeline">
+      <div class="timeline-header">Home</div>
+      <% if (tweets && tweets.length) { %>
+        <% tweets.forEach(function(tweet) { %>
+          <%- include('../partials/tweet', { tweet: tweet }) %>
+        <% }); %>
+      <% } else { %>
+        <div class="empty-state">Your timeline is empty. Follow people to see Tweets here.</div>
+      <% } %>
+    </div>
+  </main>
+</div>
+
+<%- include('../partials/foot') %>

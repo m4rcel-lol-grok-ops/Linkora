@@ -1,0 +1,42 @@
+{
+  "name": "linkora",
+  "version": "1.0.0",
+  "description": "Linkora - A social networking platform inspired by the 2014 desktop web experience",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "migrate": "node migrations/run.js",
+    "seed": "node seeds/run.js",
+    "test": "node --test tests/**/*.test.js",
+    "lint": "echo \"No linter configured\""
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "argon2": "^0.41.1",
+    "connect-pg-simple": "^10.0.0",
+    "cookie-parser": "^1.4.7",
+    "csurf": "^1.11.0",
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "express-session": "^1.18.1",
+    "express-validator": "^7.2.1",
+    "helmet": "^8.0.0",
+    "method-override": "^3.0.0",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "pg": "^8.13.1",
+    "uuid": "^11.0.5",
+    "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  },
+  "keywords": ["social", "linkora", "microblogging"],
+  "license": "MIT",
+  "private": true
+}

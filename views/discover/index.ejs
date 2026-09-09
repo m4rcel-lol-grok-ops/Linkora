@@ -1,0 +1,63 @@
+<%- include('../partials/head') %>
+
+<div class="dashboard">
+  <main class="dashboard-center" style="max-width:590px;">
+    <div class="module">
+      <div class="module-header">Popular Tweets</div>
+      <div class="module-body">
+        <% if (popular && popular.length) { %>
+          <% popular.forEach(function(tweet) { %>
+            <%- include('../partials/tweet', { tweet: tweet }) %>
+          <% }); %>
+        <% } else { %>
+          <div class="empty-state">No popular Tweets yet.</div>
+        <% } %>
+      </div>
+    </div>
+  </main>
+
+  <aside class="dashboard-right">
+    <div class="module">
+      <div class="module-header">Who to follow</div>
+      <div class="module-body">
+        <% if (suggestions && suggestions.length) { %>
+          <% suggestions.forEach(function(u) { %>
+            <div class="wtf-item">
+              <img class="wtf-avatar" src="<%= u.avatar_url || '/images/default-avatar.svg' %>" alt="">
+              <div class="wtf-info">
+                <a href="/<%= u.username %>" class="wtf-name"><%= u.display_name %></a>
+                <span class="wtf-username">@<%= u.username %></span>
+                <% if (typeof currentUser !== 'undefined' && currentUser) { %>
+                <form action="/<%= u.username %>/follow" method="post" style="margin-top:6px;">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <button type="submit" class="btn-follow">Follow</button>
+                </form>
+                <% } %>
+              </div>
+            </div>
+          <% }); %>
+        <% } else { %>
+          <div class="empty-state">No suggestions</div>
+        <% } %>
+      </div>
+    </div>
+
+    <div class="module">
+      <div class="module-header">Trends</div>
+      <div class="module-body">
+        <% if (trends && trends.length) { %>
+          <% trends.forEach(function(t) { %>
+            <div class="trend-item">
+              <a href="/search?q=%23<%= encodeURIComponent(t.tag) %>">#<%= t.tag %></a>
+              <div class="trend-meta"><% if (t.score) { %><%= t.score %> Tweets<% } %></div>
+            </div>
+          <% }); %>
+        <% } else { %>
+          <div class="empty-state">No trends</div>
+        <% } %>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<%- include('../partials/foot') %>

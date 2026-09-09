@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= typeof title !== 'undefined' ? title : 'Linkora' %></title>
+  <meta name="description" content="<%= typeof description !== 'undefined' ? description : 'Linkora — Connect with people and discover what\'s happening.' %>">
+  <link rel="stylesheet" href="/css/linkora.css">
+  <% if (typeof ogTitle !== 'undefined') { %>
+  <meta property="og:title" content="<%= ogTitle %>">
+  <meta property="og:description" content="<%= typeof ogDescription !== 'undefined' ? ogDescription : '' %>">
+  <meta property="og:type" content="website">
+  <% } %>
+</head>
+<body>
+<%- include('nav') %>
+<div class="page-container">
+<% if (typeof flash !== 'undefined' && flash) { %>
+  <div class="<%= flash.type === 'success' ? 'form-success' : 'form-error' %>" style="max-width:590px;margin:0 auto 10px;">
+    <%= flash.message %>
+  </div>
+<% } %>

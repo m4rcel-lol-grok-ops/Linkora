@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= typeof title !== 'undefined' ? title : 'Linkora' %></title>
+  <meta name="description" content="Linkora - Connect with people and discover what's happening.">
+  <link rel="stylesheet" href="/css/linkora.css">
+  <% if (typeof profileUser !== 'undefined' && profileUser) { %>
+  <meta property="og:title" content="<%= profileUser.display_name %> (@<%= profileUser.username %>)">
+  <meta property="og:description" content="<%= profileUser.bio || 'On Linkora' %>">
+  <% } %>
+</head>
+<body>
+  <%- include('../partials/nav') %>
+
+  <div class="page-container">
+    <% if (typeof flash !== 'undefined' && flash) { %>
+      <div class="<%= flash.type === 'success' ? 'form-success' : 'form-error' %>" style="max-width:590px;margin:0 auto 10px;">
+        <%= flash.message %>
+      </div>
+    <% } %>
+    <%- body %>
+  </div>
+
+  <script src="/js/linkora.js"></script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+# Example Caddyfile for host-installed Caddy reverse-proxying to Linkora
+# Place this (or merge) into your host Caddy configuration.
+# Caddy handles TLS; Node.js listens on plain HTTP inside the container.
+
+linkora.example.com {
+    # Reverse proxy to the Docker-published port
+    reverse_proxy 127.0.0.1:3000
+
+    # Optional: enable compression
+    encode gzip zstd
+
+    # Optional: security headers (Helmet already sets many inside the app)
+    header {
+        # Additional host-level headers if desired
+        -Server
+    }
+
+    # Logging
+    log {
+        output file /var/log/caddy/linkora.log
+        format json
+    }
+}
+
+# Local development without TLS (optional)
+# localhost {
+#     reverse_proxy 127.0.0.1:3000
+# }

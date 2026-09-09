@@ -1,0 +1,14 @@
+<%- include('../partials/head', {
+  ogTitle: tweet.display_name + ' on Linkora',
+  ogDescription: tweet.text
+}) %>
+
+<div class="dashboard">
+  <main class="dashboard-center" style="max-width:590px;margin:0 auto;">
+    <div class="timeline">
+      <%- include('../partials/tweet', { tweet: tweet }) %>
+    </div>
+  </main>
+</div>
+
+<%- include('../partials/foot') %>

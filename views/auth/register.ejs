@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/linkora.css">
+</head>
+<body>
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo">Linkora</div>
+    <h1>Join Linkora today.</h1>
+    <% if (error) { %>
+      <div class="form-error"><%= error %></div>
+    <% } %>
+    <form method="post" action="/register" novalidate>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required pattern="[A-Za-z0-9_]+" maxlength="30"
+               value="<%= typeof form !== 'undefined' && form.username ? form.username : '' %>" autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label for="display_name">Full name</label>
+        <input type="text" id="display_name" name="display_name" required maxlength="50"
+               value="<%= typeof form !== 'undefined' && form.display_name ? form.display_name : '' %>" autocomplete="name">
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required
+               value="<%= typeof form !== 'undefined' && form.email ? form.email : '' %>" autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required minlength="8" autocomplete="new-password">
+      </div>
+      <button type="submit" class="btn-primary">Sign up</button>
+    </form>
+    <div class="auth-footer">
+      Already have an account? <a href="/login">Log in</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

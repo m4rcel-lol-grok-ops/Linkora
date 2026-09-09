@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Something went wrong / Linkora</title>
+  <link rel="stylesheet" href="/css/linkora.css">
+</head>
+<body>
+  <div class="error-page">
+    <div style="color:var(--linkora-blue);font-size:32px;font-weight:700;margin-bottom:20px;">Linkora</div>
+    <h1>500</h1>
+    <p><%= typeof message !== 'undefined' ? message : 'An unexpected error occurred.' %></p>
+    <p><a href="/">Back to Linkora</a></p>
+  </div>
+</body>
+</html>

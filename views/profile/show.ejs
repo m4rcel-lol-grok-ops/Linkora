@@ -1,0 +1,94 @@
+<%- include('../partials/head', {
+  ogTitle: profileUser.display_name + ' (@' + profileUser.username + ')',
+  ogDescription: profileUser.bio || 'On Linkora'
+}) %>
+
+<div class="dashboard">
+  <aside class="dashboard-left">
+    <div class="profile-header">
+      <div class="profile-banner" style="<%= profileUser.header_url ? 'background-image:url(' + profileUser.header_url + ')' : 'background-color:' + (profileUser.accent_color || '#55acee') %>"></div>
+      <div class="profile-card">
+        <img class="profile-avatar-large" src="<%= profileUser.avatar_url || '/images/default-avatar.svg' %>" alt="<%= profileUser.display_name %>">
+        <div class="profile-actions">
+          <% if (isOwn) { %>
+            <a href="/settings/profile" class="btn-follow">Edit profile</a>
+          <% } else if (typeof currentUser !== 'undefined' && currentUser) { %>
+            <% if (isFollowing) { %>
+              <form action="/<%= profileUser.username %>/unfollow" method="post">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" class="btn-follow btn-following">Following</button>
+              </form>
+            <% } else { %>
+              <form action="/<%= profileUser.username %>/follow" method="post">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" class="btn-follow">Follow</button>
+              </form>
+            <% } %>
+          <% } %>
+        </div>
+        <div class="profile-name-block">
+          <div class="profile-display-name">
+            <%= profileUser.display_name %>
+            <% if (profileUser.is_verified) { %><span style="color:var(--linkora-blue);" title="Verified">✓</span><% } %>
+          </div>
+          <div class="profile-username">@<%= profileUser.username %></div>
+        </div>
+        <% if (profileUser.bio) { %>
+          <div class="profile-bio"><%= profileUser.bio %></div>
+        <% } %>
+        <div class="profile-meta">
+          <% if (profileUser.location) { %><span>📍 <%= profileUser.location %></span><% } %>
+          <% if (profileUser.website) { %><span>🔗 <a href="<%= profileUser.website %>" rel="noopener noreferrer" target="_blank"><%= profileUser.website %></a></span><% } %>
+          <span>📅 Joined <%= new Date(profileUser.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) %></span>
+        </div>
+        <div class="profile-stats-bar">
+          <a href="/<%= profileUser.username %>">
+            <span class="stat-label">Tweets</span>
+            <span class="stat-value"><%= profileUser.tweets_count %></span>
+          </a>
+          <a href="/<%= profileUser.username %>/following">
+            <span class="stat-label">Following</span>
+            <span class="stat-value"><%= profileUser.following_count %></span>
+          </a>
+          <a href="/<%= profileUser.username %>/followers">
+            <span class="stat-label">Followers</span>
+            <span class="stat-value"><%= profileUser.followers_count %></span>
+          </a>
+          <a href="/<%= profileUser.username %>/favorites">
+            <span class="stat-label">Favorites</span>
+            <span class="stat-value"><%= profileUser.favorites_count %></span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="dashboard-center">
+    <div class="profile-tabs">
+      <a href="/<%= profileUser.username %>" class="profile-tab active">Tweets</a>
+      <a href="/<%= profileUser.username %>?include=replies" class="profile-tab">Tweets &amp; replies</a>
+      <a href="/<%= profileUser.username %>/media" class="profile-tab">Photos &amp; videos</a>
+    </div>
+
+    <div class="timeline">
+      <% if (pinned) { %>
+        <%- include('../partials/tweet', { tweet: pinned, pinned: true }) %>
+      <% } %>
+      <% if (tweets && tweets.length) { %>
+        <% tweets.forEach(function(tweet) { %>
+          <% if (!pinned || tweet.id !== pinned.id) { %>
+            <%- include('../partials/tweet', { tweet: tweet }) %>
+          <% } %>
+        <% }); %>
+      <% } else { %>
+        <div class="empty-state">No Tweets yet.</div>
+      <% } %>
+    </div>
+  </main>
+
+  <aside class="dashboard-right">
+    <!-- Reserved for Who to follow / Trends on profile in late-2014 three-column layouts -->
+  </aside>
+</div>
+
+<%- include('../partials/foot') %>

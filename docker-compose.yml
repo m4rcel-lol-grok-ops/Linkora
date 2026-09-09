@@ -1,0 +1,53 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: linkora-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: linkora
+      POSTGRES_PASSWORD: linkora_secret
+      POSTGRES_DB: linkora
+    volumes:
+      - linkora_pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U linkora -d linkora"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  linkora:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: linkora-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: postgres://linkora:linkora_secret@postgres:5432/linkora
+      SESSION_SECRET: ${SESSION_SECRET:-change-me-in-production-use-long-random-string}
+      BASE_URL: ${BASE_URL:-http://localhost:3000}
+      TRUST_PROXY: "1"
+      UPLOAD_DIR: /app/public/uploads
+      MAX_UPLOAD_SIZE: "5242880"
+      LOG_LEVEL: info
+    ports:
+      - "3000:3000"
+    volumes:
+      - linkora_uploads:/app/public/uploads
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  linkora_pgdata:
+  linkora_uploads:

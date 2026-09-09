@@ -1,0 +1,25 @@
+<%- include('../partials/head') %>
+
+<div class="dashboard">
+  <main class="dashboard-center" style="max-width:590px;margin:0 auto;">
+    <div class="timeline">
+      <div class="timeline-header">Followers · @<%= profileUser.username %></div>
+      <% if (users && users.length) { %>
+        <% users.forEach(function(u) { %>
+          <div class="wtf-item">
+            <img class="wtf-avatar" src="<%= u.avatar_url || '/images/default-avatar.svg' %>" alt="">
+            <div class="wtf-info">
+              <a href="/<%= u.username %>" class="wtf-name"><%= u.display_name %></a>
+              <span class="wtf-username">@<%= u.username %></span>
+              <% if (u.bio) { %><div style="font-size:12px;margin-top:2px;"><%= u.bio %></div><% } %>
+            </div>
+          </div>
+        <% }); %>
+      <% } else { %>
+        <div class="empty-state">No followers yet.</div>
+      <% } %>
+    </div>
+  </main>
+</div>
+
+<%- include('../partials/foot') %>

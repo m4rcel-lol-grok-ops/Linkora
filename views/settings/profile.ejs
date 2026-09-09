@@ -1,0 +1,37 @@
+<%- include('../partials/head') %>
+
+<div class="settings-layout">
+  <nav class="settings-nav">
+    <a href="/settings/account">Account</a>
+    <a href="/settings/profile" class="active">Profile</a>
+    <a href="/settings/password">Password</a>
+    <a href="/settings/privacy">Privacy</a>
+    <a href="/settings/design">Design</a>
+  </nav>
+  <div class="settings-content">
+    <h2 style="margin-top:0;font-weight:300;">Profile</h2>
+    <% if (typeof error !== 'undefined' && error) { %><div class="form-error"><%= error %></div><% } %>
+    <form method="post" action="/settings/profile">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <div class="form-group">
+        <label for="display_name">Name</label>
+        <input type="text" id="display_name" name="display_name" value="<%= form.display_name || '' %>" maxlength="50" required>
+      </div>
+      <div class="form-group">
+        <label for="bio">Bio</label>
+        <input type="text" id="bio" name="bio" value="<%= form.bio || '' %>" maxlength="160">
+      </div>
+      <div class="form-group">
+        <label for="location">Location</label>
+        <input type="text" id="location" name="location" value="<%= form.location || '' %>" maxlength="100">
+      </div>
+      <div class="form-group">
+        <label for="website">Website</label>
+        <input type="text" id="website" name="website" value="<%= form.website || '' %>" maxlength="200">
+      </div>
+      <button type="submit" class="btn-primary" style="width:auto;padding:0 20px;">Save changes</button>
+    </form>
+  </div>
+</div>
+
+<%- include('../partials/foot') %>
