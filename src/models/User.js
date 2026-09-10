@@ -62,9 +62,13 @@ const User = {
 
   async authenticate(login, password) {
     const isEmail = login.includes('@');
-    const user = isEmail
-      ? await this.findByEmail(login)
-      : await this.findByUsername(login);
+    const { rows } = await db.query(
+      isEmail
+        ? `SELECT * FROM users WHERE email_lower = $1`
+        : `SELECT * FROM users WHERE username_lower = $1`,
+      [login.toLowerCase()]
+    );
+    const user = rows[0];
     if (!user || user.is_suspended) return null;
     const ok = await verifyPassword(user.password_hash, password);
     if (!ok) return null;

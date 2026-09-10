@@ -5,8 +5,22 @@ const config = require('./index');
 const logger = require('../utils/logger');
 
 let pool;
+let pgliteClient = null;
+
+function usePglite() {
+  return process.env.USE_PGLITE === '1' || process.env.USE_PGLITE === 'true';
+}
 
 function createPool() {
+  if (usePglite()) {
+    if (!pgliteClient) {
+      throw new Error('PGlite client not initialized. Call initPglite() first.');
+    }
+    const { createPglitePool } = require('./pglite-pool');
+    pool = createPglitePool(pgliteClient);
+    return pool;
+  }
+
   const options = config.database.url
     ? { connectionString: config.database.url }
     : {
@@ -29,6 +43,14 @@ function createPool() {
   });
 
   return pool;
+}
+
+async function initPglite() {
+  const { PGlite } = require('@electric-sql/pglite');
+  pgliteClient = new PGlite();
+  await pgliteClient.waitReady;
+  createPool();
+  return pgliteClient;
 }
 
 function getPool() {
@@ -62,10 +84,12 @@ async function close() {
     await pool.end();
     pool = null;
   }
+  pgliteClient = null;
 }
 
 module.exports = {
   createPool,
+  initPglite,
   getPool,
   query,
   getClient,

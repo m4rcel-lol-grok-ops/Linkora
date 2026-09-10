@@ -38,7 +38,6 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '..', 'views'));
 app.set('view cache', config.env === 'production');
 
-// Security headers
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -58,7 +57,6 @@ app.use(
   })
 );
 
-// Request logging
 if (config.env !== 'test') {
   app.use(
     morgan(config.env === 'production' ? 'combined' : 'dev', {
@@ -72,7 +70,6 @@ app.use(express.json({ limit: '1mb' }));
 app.use(cookieParser());
 app.use(methodOverride('_method'));
 
-// Static files
 app.use(
   express.static(path.join(__dirname, '..', 'public'), {
     maxAge: config.env === 'production' ? '7d' : 0,
@@ -80,7 +77,6 @@ app.use(
   })
 );
 
-// Rate limiting
 const globalLimiter = rateLimit({
   windowMs: config.rateLimit.windowMs,
   max: config.rateLimit.max,
@@ -90,18 +86,15 @@ const globalLimiter = rateLimit({
 });
 app.use(globalLimiter);
 
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: config.rateLimit.authMax,
-  message: 'Too many authentication attempts. Please try again later.',
-});
+const usePglite = process.env.USE_PGLITE === '1' || process.env.USE_PGLITE === 'true';
 
-// Session store
-const sessionStore = new pgSession({
-  pool: db.getPool(),
-  tableName: 'session',
-  createTableIfMissing: true,
-});
+const sessionStore = usePglite
+  ? new session.MemoryStore()
+  : new pgSession({
+      pool: db.getPool(),
+      tableName: 'session',
+      createTableIfMissing: true,
+    });
 
 app.use(
   session({
@@ -119,12 +112,8 @@ app.use(
   })
 );
 
-// CSRF (skip for pure JSON API that uses other auth in future)
 const csrfProtection = csrf({ cookie: false });
 app.use((req, res, next) => {
-  if (req.path.startsWith('/api/') && req.headers['x-requested-with'] === 'XMLHttpRequest') {
-    // API can still use CSRF via form or header; keep protection by default
-  }
   return csrfProtection(req, res, next);
 });
 
@@ -138,7 +127,6 @@ app.use((req, res, next) => {
 
 app.use(attachUser);
 
-// Health
 app.get('/health', async (req, res) => {
   try {
     await db.healthCheck();
@@ -148,7 +136,6 @@ app.get('/health', async (req, res) => {
   }
 });
 
-// Routes
 app.use('/', authRoutes);
 app.use('/', homeRoutes);
 app.use('/', tweetRoutes);
@@ -158,10 +145,8 @@ app.use('/settings', settingsRoutes);
 app.use('/connect', connectRoutes);
 app.use('/discover', discoverRoutes);
 app.use('/api', apiRoutes);
-// Profile routes last among page routes (includes /:username)
 app.use('/', profileRoutes);
 
-// 404 + error
 app.use(notFound);
 app.use(errorHandler);
 

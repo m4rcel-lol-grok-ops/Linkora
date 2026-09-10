@@ -54,7 +54,7 @@ const config = {
     'block', 'blocks', 'mute', 'mutes', 'media', 'upload', 'uploads',
     'static', 'assets', 'css', 'js', 'img', 'images', 'favicon', 'robots',
     'sitemap', 'health', 'metrics', 'adminpanel', 'moderator', 'mod',
-    'linkora', 'www', 'mail', 'email', 'root', 'null', 'undefined',
+    'www', 'mail', 'email', 'root', 'null', 'undefined',
   ]),
 };
 

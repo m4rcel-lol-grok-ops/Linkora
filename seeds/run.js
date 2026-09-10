@@ -13,19 +13,23 @@ const ARGON2_OPTIONS = {
   parallelism: 4,
 };
 
-async function seed() {
-  const pool = new Pool(
-    config.database.url
-      ? { connectionString: config.database.url }
-      : {
-          host: config.database.host,
-          port: config.database.port,
-          database: config.database.name,
-          user: config.database.user,
-          password: config.database.password,
-        }
-  );
-  const client = await pool.connect();
+async function seed(existingClient) {
+  let pool = null;
+  let client = existingClient;
+  if (!client) {
+    pool = new Pool(
+      config.database.url
+        ? { connectionString: config.database.url }
+        : {
+            host: config.database.host,
+            port: config.database.port,
+            database: config.database.name,
+            user: config.database.user,
+            password: config.database.password,
+          }
+    );
+    client = await pool.connect();
+  }
 
   try {
     const existing = await client.query('SELECT COUNT(*)::int AS c FROM users');
@@ -133,12 +137,18 @@ async function seed() {
     console.log('Sample logins (password for all: password123):');
     console.log('  alice / bob / charlie / diana / linkora / devuser');
   } finally {
-    client.release();
-    await pool.end();
+    if (pool) {
+      client.release();
+      await pool.end();
+    }
   }
 }
 
-seed().catch((err) => {
-  console.error('Seed failed:', err);
-  process.exit(1);
-});
+module.exports = { seed };
+
+if (require.main === module) {
+  seed().catch((err) => {
+    console.error('Seed failed:', err);
+    process.exit(1);
+  });
+}
